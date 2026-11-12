@@ -1,0 +1,12 @@
+# Key versions observed in the existing A40 environment; NOT a transitive lock.
+# Custom vendored vLLM metadata is 0.6.1; do not install the official wheel instead.
+torch==2.5.0
+torchvision==0.20.0
+xformers==0.0.28.post2
+transformers==4.45.2
+scikit-learn==1.5.1
+quantile-forest==1.4.1
+scipy==1.13.1
+joblib==1.4.2
+threadpoolctl==3.5.0
+numpy<2

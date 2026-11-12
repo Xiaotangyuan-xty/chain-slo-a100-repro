@@ -1,0 +1,38 @@
+{
+  "schema": "chainbench-deployment-profile/v1",
+  "model": "qwen14",
+  "model_repository": "Qwen/Qwen2.5-14B-Instruct",
+  "method": "A",
+  "dtype": "bfloat16",
+  "model_revision": null,
+  "model_directory": null,
+  "predictor_policy": "official_qwen7_QRF_transferred_to_14B",
+  "tensor_parallel_proposal": 1,
+  "actual_tensor_parallel": null,
+  "devices": null,
+  "backend_source_sha256": null,
+  "environment_lock_sha256": null,
+  "tokenizer_receipt_sha256": null,
+  "deployment_receipt_sha256": null,
+  "cutoff_gate_sha256": null,
+  "cleanup_gate_sha256": null,
+  "raw_audit_gate_sha256": null,
+  "a100_qualification": "NOT_TESTED",
+  "default_kv": {
+    "blocks": null,
+    "block_tokens": null,
+    "bytes_per_block": null,
+    "physical_bytes": null,
+    "tp_interpretation": null
+  },
+  "engine": {
+    "max_model_len": null,
+    "max_num_seqs": null,
+    "max_num_batched_tokens": null,
+    "memory_utilization": null,
+    "chunked_prefill": null,
+    "prefix_caching": null,
+    "eager": null
+  },
+  "paths_are_local_and_not_committed": true
+}

@@ -1,0 +1,14 @@
+{
+  "ablation": "no_event",
+  "base_release": "v47pro3",
+  "base_commit": "f8c5d84048536861a017adaa53648b6b753487e6",
+  "semantics": "Disable immediate replan on new root, stage or sibling arrival. Preserve the 50-tick cadence and initial/selected-loss recovery. Chain credit and KV protection remain unchanged.",
+  "source": "candidate_source/programs/frozen_v47/native_chain.py",
+  "A_Astar_unmodified": true,
+  "GPU0_untouched": true,
+  "external_processes_untouched": true,
+  "candidate_tree_sha256": "f7f6fa751535d7941fefd57b03aefd9cb85ffe3a6574171e134a70aadb0d0077",
+  "physical_KV_allocator_retained": true,
+  "shared_expired_drain_retained": true,
+  "retained": "50-tick fallback, initial/fully-lost selection recovery, and expired-drain mode transition recovery remain; only new-root/stage/sibling arrival replans are removed."
+}

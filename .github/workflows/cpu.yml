@@ -1,0 +1,21 @@
+name: CPU reproducibility checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python: ['3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
+      - run: PYTHONPATH=vendor/v47pro3/programs python -m unittest discover -s legacy/a40_programs -p test_service_forecast.py -v
+      - run: python tools/check_release.py
+      - run: chainbench plan --out runs/plan
+      - run: chainbench prepare --case s1-001 --out runs/example

@@ -1,0 +1,15 @@
+[
+  {
+    "path": "vendor/jitserve/scripts/deepresearch-benchmark.sh",
+    "reason": "Removed upstream hardcoded credential before public release",
+    "removed_markers": 1,
+    "original_sha256": "075d3bfc986e7b8c8c30498ab62d212b1db54fb3e3ef2e1dc311c176b2e219b3",
+    "published_sha256": "42ec714adafb8e959e65b3ec86d2cfe56230af2add69a7a3d1a9c7083f5cabc5"
+  },
+  {
+    "path": "legacy/a40_programs/client_recording.py",
+    "reason": "Python 3.10 f-string quote compatibility; logging message only; frozen candidate unchanged",
+    "original_sha256": "29cec0ac7180b2e01647e00ac021b64ebb279ec96b2ef9fe2cb7db44907d2e9e",
+    "published_sha256": "dcbc94e246e514f29e1c20e5ef178bf7cf0247ab8a67b3d27a9a3dbc53a5ae49"
+  }
+]

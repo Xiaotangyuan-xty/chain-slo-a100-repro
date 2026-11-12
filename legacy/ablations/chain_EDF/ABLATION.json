@@ -1,0 +1,14 @@
+{
+  "ablation": "chain_EDF",
+  "base_release": "v47pro3",
+  "base_commit": "f8c5d84048536861a017adaa53648b6b753487e6",
+  "semantics": "Order roots only by whole-chain deadline with arrival as deterministic tie-break. No forecast, utility score, incumbent boost or lease/residency protection. Normal physical KV accounting and event-triggered replan remain.",
+  "source": "candidate_source/programs/frozen_v47/native_chain.py",
+  "A_Astar_unmodified": true,
+  "GPU0_untouched": true,
+  "external_processes_untouched": true,
+  "candidate_tree_sha256": "411a9273503b74074c6e9edbaf49c9bd47666df4d0c5237d1aa5ae7fcc26e358",
+  "physical_KV_allocator_retained": true,
+  "shared_expired_drain_retained": true,
+  "retained": "Deadline/arrival ordering while any root still has live credit. Shared all-expired native drain remains, with no request drops."
+}

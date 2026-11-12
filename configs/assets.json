@@ -1,0 +1,141 @@
+{
+  "schema": "external-assets/v1",
+  "predictor_repository": "En-2863/jitserve-qrf-length-predictor",
+  "predictor_revision": "1e587124a9671f54f4c659f97bccbbe890b3d8af",
+  "qrf": {
+    "qrf_model/0_qrf_lmsys_chat_llama3_8b.pkl": {
+      "sha256": "2244e85c3def85a3e6d040e80617b76a1ee95592f4230d604b4f4d193962994c",
+      "bytes": 1341490597
+    },
+    "qrf_vectorizer/0_qrf_lmsys_chat_llama3_8b.pkl": {
+      "sha256": "d89b04451c8d07347ff95058d26ecc5b968bf9ea5f29d96e6c95c40cb96639bf",
+      "bytes": 4529414
+    },
+    "qrf_model/0_qrf_lmsys_chat_qwen25_7b.pkl": {
+      "sha256": "f1f860b3c3a6ec4e9cc3acbeabee64823a73be423792b87601613f95d24ae52c",
+      "bytes": 1395254269
+    },
+    "qrf_vectorizer/0_qrf_lmsys_chat_qwen25_7b.pkl": {
+      "sha256": "f7c961fce4ce0c83c0038a0b0d0ce2f15d64f4257bb83a0b14b6201e1b982951",
+      "bytes": 4504836
+    }
+  },
+  "models": {
+    "llama8": {
+      "repository": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+      "revision": null,
+      "revision_status": "Resolve immutable HF commit on A100 before downloading; verify all historical hashes when using original snapshot.",
+      "files": {
+        "config.json": {
+          "sha256": "29e4c210b0d6ac178b16b2a255a568bdb23b581e50ca1ef6a6d071dd85704e6e",
+          "bytes": 855
+        },
+        "generation_config.json": {
+          "sha256": "189fb0c0d7fd8a527db217c0a60a0e013f0394cd8800f9697a666a9e75e5f7fd",
+          "bytes": 184
+        },
+        "tokenizer_config.json": {
+          "sha256": "177c7b61e616fecb84c17ce0591acb92c6c4d60e9ac5ababfb940ff23bbcd424",
+          "bytes": 55351
+        },
+        "tokenizer.json": {
+          "sha256": "79e3e522635f3171300913bb421464a87de6222182a0570b9b2ccba2a964b2b4",
+          "bytes": 9085657
+        },
+        "special_tokens_map.json": {
+          "sha256": "6f38c73729248f6c127296386e3cdde96e254636cc58b4169d3fd32328d9a8ec",
+          "bytes": 296
+        },
+        "model.safetensors.index.json": {
+          "sha256": "146776fce3f6db1103aa6f249e65ee5544c5923ce6f971b092eee79aa6e5d37b",
+          "bytes": 23950
+        },
+        "model-00001-of-00004.safetensors": {
+          "sha256": "2b1879f356aed350030bb40eb45ad362c89d9891096f79a3ab323d3ba5607668",
+          "bytes": 4976698672
+        },
+        "model-00002-of-00004.safetensors": {
+          "sha256": "09d433f650646834a83c580877bd60c6d1f88f7755305c12576b5c7058f9af15",
+          "bytes": 4999802720
+        },
+        "model-00003-of-00004.safetensors": {
+          "sha256": "fc1cdddd6bfa91128d6e94ee73d0ce62bfcdb7af29e978ddcab30c66ae9ea7fa",
+          "bytes": 4915916176
+        },
+        "model-00004-of-00004.safetensors": {
+          "sha256": "92ecfe1a2414458b4821ac8c13cf8cb70aed66b5eea8dc5ad9eeb4ff309d6d7b",
+          "bytes": 1168138808
+        }
+      }
+    },
+    "qwen14": {
+      "repository": "Qwen/Qwen2.5-14B-Instruct",
+      "revision": null,
+      "revision_status": "Resolve immutable HF commit on A100 before downloading; verify all historical hashes when using original snapshot.",
+      "files": {
+        "config.json": {
+          "sha256": "0f2085dbbe2ee251bd6a6a0797d84a6ce34436044d629aa3cba793b43d311a9e",
+          "bytes": 663
+        },
+        "generation_config.json": {
+          "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+          "bytes": 242
+        },
+        "tokenizer_config.json": {
+          "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+          "bytes": 7305
+        },
+        "tokenizer.json": {
+          "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "bytes": 7031645
+        },
+        "model.safetensors.index.json": {
+          "sha256": "46627f7a9e851d9cede6a7a4c49999082148ced9c22d2b9cfaaa5ba8b65dc68f",
+          "bytes": 47472
+        },
+        "model-00001-of-00008.safetensors": {
+          "sha256": "b477be7572f0ab3ae3cbba38d508cc33e70600b2045669c4ad848051c3432094",
+          "bytes": 3885154816
+        },
+        "model-00002-of-00008.safetensors": {
+          "sha256": "eb356aacae443e30f52712b1e98fadf206976365e2f5ee886321b0bb38c7cea8",
+          "bytes": 3995327992
+        },
+        "model-00003-of-00008.safetensors": {
+          "sha256": "cee9dbdf738ce61adb21c70ad5c5585747caaab6457c9ffc3bfa20d73127c2c6",
+          "bytes": 3995328080
+        },
+        "model-00004-of-00008.safetensors": {
+          "sha256": "b1201a6edcac8ef96a37040524fe37a5a84e446513ed40491e764a37302385fa",
+          "bytes": 3995338432
+        },
+        "model-00005-of-00008.safetensors": {
+          "sha256": "fbbda3cdee31895d0c57d617449af5579d219df34f3d63f7a23acbfe7fb0a647",
+          "bytes": 3979624824
+        },
+        "model-00006-of-00008.safetensors": {
+          "sha256": "f7ac652aa101717c97cfeccf5109985cca5b04529b57d3f4d2ec7a802266296b",
+          "bytes": 3995328080
+        },
+        "model-00007-of-00008.safetensors": {
+          "sha256": "e9115e615b575acb6e8b3a06524b32cbf7f680f07517125e4334f62c3f4acb0d",
+          "bytes": 3995328080
+        },
+        "model-00008-of-00008.safetensors": {
+          "sha256": "a77f603d8368749c19d3ac9cf2a300e476edcc794ea41af8e473ee12935eadb8",
+          "bytes": 1698703696
+        }
+      }
+    },
+    "qwen30": {
+      "repository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "revision": null,
+      "revision_status": "Resolve immutable commit and create SHA256 inventory before qualification; weights not redistributed."
+    },
+    "llama70": {
+      "repository": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+      "revision": null,
+      "revision_status": "Resolve immutable commit and create SHA256 inventory before qualification; weights not redistributed."
+    }
+  }
+}

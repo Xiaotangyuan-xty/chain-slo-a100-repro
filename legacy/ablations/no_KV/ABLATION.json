@@ -1,0 +1,14 @@
+{
+  "ablation": "no_KV",
+  "base_release": "v47pro3",
+  "base_commit": "f8c5d84048536861a017adaa53648b6b753487e6",
+  "semantics": "Remove short-horizon KV capacity packing, protected residents and lease/residency holds in both live-credit scheduling and expired drain. Chain credit and arrival replan remain; native physical allocation/preemption and sequence caps remain.",
+  "source": "candidate_source/programs/frozen_v47/native_chain.py",
+  "A_Astar_unmodified": true,
+  "GPU0_untouched": true,
+  "external_processes_untouched": true,
+  "candidate_tree_sha256": "7a452a23604eeaffa00b940206ff2ce8389ebddaaaea47bc535a5bf3e1122f3b",
+  "physical_KV_allocator_retained": true,
+  "shared_expired_drain_retained": true,
+  "retained": "Original 1.2 incumbent score bias remains; removed mechanisms are horizon capacity packing and both lease holds. Physical native KV allocation, preemption and sequence caps remain."
+}

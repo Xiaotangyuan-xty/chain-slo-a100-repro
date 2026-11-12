@@ -1,0 +1,12 @@
+{
+  "llama8": {
+    "original_json_sha256": "a2396fccf8672692a3ecc2960c718677c8e241ee0def44532f70e6fc7b2ae4b6",
+    "original_bytes": 7838470,
+    "transformation": "gzip only; decompressed JSON byte-identical to original frozen WORKLOAD.json"
+  },
+  "qwen14": {
+    "original_json_sha256": "f9aee8686625acbb064a6766ed6cf7ddd7c82aa7af0d886fef7795887f35dfd9",
+    "original_bytes": 7838453,
+    "transformation": "gzip only; decompressed JSON byte-identical to original frozen WORKLOAD.json"
+  }
+}

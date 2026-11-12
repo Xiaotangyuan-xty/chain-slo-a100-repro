@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chain-slo-a100-repro"
+version = "0.1.0"
+description = "Frozen chain scheduling sources and window-only A100 reproduction plans"
+requires-python = ">=3.10"
+dependencies = []
+license = {text = "Apache-2.0 (code); see THIRD_PARTY_NOTICES.md for data and upstream assets"}
+
+[project.scripts]
+chainbench = "chainbench.cli:main"
+
+[tool.setuptools]
+packages = ["chainbench"]

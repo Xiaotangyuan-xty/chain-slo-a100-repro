@@ -1,0 +1,10 @@
+{
+  "schema": "chainbench-source-origin/v1",
+  "date": "2026-11-12",
+  "candidate_repository": "https://github.com/Xiaotangyuan-xty/chain-slo-v42",
+  "candidate_commit": "f8c5d84048536861a017adaa53648b6b753487e6",
+  "actual_backend": "Read-only source export from existing A40 experiment repo; CUDA binaries, weights, results, .git and caches excluded.",
+  "runtime": "Current Stage87 cleanupfix v6 case 78; Stage88 hour source; Stage69 ablations; Stage82 orderFix2 Oracle",
+  "experiment_execution": "No GPU experiment launched or modified by publication",
+  "validation_claim": "Source parity and CPU checks only; A100 NOT_TESTED"
+}
