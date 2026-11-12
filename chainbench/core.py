@@ -111,15 +111,22 @@ def workload(case):
         policy='Frozen prompts, output targets, stage barriers; whole-chain SLO=received_slo[2]*stage_count',
         source_workload_sha256=sha(ROOT/f'data/dr200_{model}.json.gz'))
 
-def source_check():
-    manifest=read(ROOT/'provenance/SOURCE_SHA256.json')
-    bad=[name for name,value in manifest['files'].items()
-         if not (ROOT/name).is_file() or sha(ROOT/name)!=value]
-    frozen=read(ROOT/'provenance/a40_SUITE_SPEC.json')['candidate_hashes']
-    bad += ['frozen:'+name for name,value in frozen.items()
-            if sha(ROOT/'vendor/v47pro3'/name)!=value]
-    return {'gate':'FAIL' if bad else 'PASS', 'files_checked':len(manifest['files']),
-            'frozen_candidate_files_checked':len(frozen), 'bad':bad, 'GPU_used':False}
+def source_check(root=ROOT):
+    from .integrity import verify_manifest
+    result=verify_manifest(root);bad=list(result['bad']);frozen={}
+    try:
+        frozen=read(root/'provenance/a40_SUITE_SPEC.json')['candidate_hashes']
+        bad+=['frozen:'+name for name,value in frozen.items()
+              if not(root/'vendor/v47pro3'/name).is_file()or sha(root/'vendor/v47pro3'/name)!=value]
+        origin=read(root/'provenance/published_SOURCE_ORIGIN.json')
+        historical=origin['historical_record']
+        if sha(root/historical['path'])!=historical['sha256']:bad.append('historical_origin_hash')
+        bad+=['origin:'+name for name,value in origin['new_candidate_runtime_files'].items()
+              if frozen.get(name)!=value or sha(root/'vendor/v47pro3'/name)!=value]
+    except (OSError,ValueError,KeyError,TypeError)as error:
+        bad.append('candidate_provenance:'+str(error))
+    return {**result,'gate':'FAIL'if bad else'PASS','bad':bad,
+            'frozen_candidate_files_checked':len(frozen),'GPU_used':False}
 
 def assess_profile(case, profile):
     """Report missing qualification evidence, without claiming a portable GPU runner."""

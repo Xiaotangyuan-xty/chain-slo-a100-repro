@@ -1,0 +1,7 @@
+# Explicit install list. Apply constraints-a40.txt separately with pip -c.
+numpy
+scikit-learn
+quantile-forest
+scipy
+joblib
+threadpoolctl

@@ -20,7 +20,7 @@
 
 1. 使用独立新 checkout、数据/模型根目录和输出目录。旧 A40 路径与旧 GPU UUID 只保留在 `legacy/` 与来源文档，不能用作新机器的授权或验收配置。
 2. Linux x86_64 + Python3.10，CUDA12.1 开发工具链；安装 Torch2.5.0+cu121，然后从 vendored 自定义 vLLM 源码重新编译 `TORCH_CUDA_ARCH_LIST=8.0`。**不要复制 A40 的 venv、.so 或官方 vLLM wheel 来替代 fork。** CMake 还会取 CUTLASS v3.5.1 与源码声明的 flash-attention commit；需网络/缓存。
-3. 原始后端依赖见 `vendor/jitserve/third_party/vllm/requirements-{cuda,common}.txt`。`environment/constraints-a40.txt` 是已核实关键版本，**不是完整 transitive lock**。全量新环境仍需构建后 `pip freeze`，连同编译日志冻结。Sarathi 放入独立环境，不覆盖现有 vLLM。
+3. 原始后端依赖见 `vendor/jitserve/third_party/vllm/requirements-{build,cuda,common}.txt`。使用 `--no-build-isolation` 前必须先安装 `requirements-build.txt`；QRF 依赖由 `environment/requirements-qrf.txt` 显式安装。`environment/constraints-a40.txt` 只约束版本，不会主动安装包，且**不是完整 transitive lock**。全量新环境仍需构建后 `pip freeze`，连同编译日志冻结。Sarathi 放入独立环境，不覆盖现有 vLLM。
 4. 下载官方权重/QRF，校验哈希；新模型验证每个 shard、架构、tokenizer 与 prompt hash。固定目标输出 token 数，不把 8B 的 tokenizer token ID 当成 30B/70B 的真值。
 5. 实现 portable host adapters 后，单独资格运行验证真实 executor、调度实际安装、预测结果无 fallback、阶段 barrier、窗口边界和自有进程清理。一次引擎一个独占 GPU 集合；整个小时实验中不可按模板批次重启。
 6. 保存原始完整轨迹：到达/请求/阶段/整链时间、token deltas、KV/调度/CPU 采样、预测事件、executor 事件、最终截止快照、cleanup、原始文件 SHA。窗口后清理成功才允许下一组，gate FAIL 原样保留，不自动重试。
@@ -30,9 +30,15 @@
 
 ```bash
 python -m pip install torch==2.5.0 torchvision==0.20.0 --index-url https://download.pytorch.org/whl/cu121
+python -m pip install -r vendor/jitserve/third_party/vllm/requirements-build.txt -c environment/constraints-a40.txt
 python -m pip install -r vendor/jitserve/third_party/vllm/requirements-cuda.txt -c environment/constraints-a40.txt
+python -m pip install -r environment/requirements-qrf.txt -c environment/constraints-a40.txt
 TORCH_CUDA_ARCH_LIST=8.0 VLLM_TARGET_DEVICE=cuda python -m pip install --no-build-isolation -e vendor/jitserve/third_party/vllm
 python -m pip install -e vendor/jitserve
+python -m pip check
+python -c "import sklearn, quantile_forest, scipy, joblib; print('QRF dependency imports OK')"
 ```
+
+最后一条只验证依赖可导入；真实 QRF pickle 的反序列化与预测仍需下载并核对官方 SHA 后，在该环境中验证，不能用 import 成功代替模型加载资格。
 
 8 个并发进程的 QRF、CPU 线程与磁盘日志也可能瓶颈；每个实例独立端口、CPU 预算、输出目录和所有权锁。NVLink 是 TP 通讯资源，不能把多实验混跑同一张卡视作“8 倍并发”。

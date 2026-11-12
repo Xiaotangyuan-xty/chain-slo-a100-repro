@@ -4,12 +4,14 @@ from collections import Counter
 from datetime import datetime,timezone
 import hashlib,json,math,sys
 from transformers import AutoTokenizer
-packet=json.load(sys.stdin);rows=[];tokenizer=None;cache={}
+packet=json.load(sys.stdin);rows=[]
 for spec in packet['cases']:
     C=Path(spec['path']);A=C/'attempts'/spec['attempt'];work=json.loads((C/'WORKLOAD.json').read_text());p=json.loads((C/'PROTOCOL.json').read_text())
     snap=json.loads((A/'CLIENT_CUTOFF_SNAPSHOT.json').read_text());origin=snap['origin_monotonic'];end=snap['cutoff_monotonic'];H=p['cutoff_seconds'];assert math.isclose(end-origin,H,rel_tol=0,abs_tol=1e-7)
     gate=json.loads((C/'receipts'/('RUN_GATE_'+spec['attempt']+'.json')).read_text());assert gate['gate']=='PASS'
-    if tokenizer is None:tokenizer=AutoTokenizer.from_pretrained(p['model_path'],local_files_only=True,trust_remote_code=False)
+    # Tokenizer and text cache belong to this case, including mixed-model packets.
+    tokenizer=AutoTokenizer.from_pretrained(p['model_path'],local_files_only=True,trust_remote_code=False)
+    cache={}
     def count(text):
         h=hashlib.sha256(text.encode()).digest()
         if h not in cache:cache[h]=len(tokenizer(text,add_special_tokens=False).input_ids)
@@ -38,21 +40,24 @@ for spec in packet['cases']:
         path=A/name
         if not path.exists():continue
         h=hashlib.sha256();n=0
-        for line in path.open('rb'):
-            h.update(line);e=json.loads(line);n+=1
-            if name=='WINDOW_TOKEN_DELTAS.jsonl':
-                uid=e['request_uuid'];assert e['previous_tokens']==prefix_counts.get(uid,0)
-                prefix_counts[uid]=e['output_tokens'];prefixes.setdefault(uid,[]).extend(e['new_token_ids'])
-                if e['phase']=='main':assert origin<=e['monotonic']<end;raw_tokens+=len(e['new_token_ids'])
-            elif name=='EXECUTOR_EVENTS.jsonl':
-                late_model_calls+=e['start_monotonic']>=end+.01
-                assert e['error']is None or(e['error']=='CancelledError'and e['end_monotonic']>=end)
-            elif name=='SHARED_PREDICTION_EVENTS.jsonl':assert not(e['kind']=='prediction_fallback'and e['monotonic']<end)
+        with path.open('rb')as stream:
+            for line in stream:
+                h.update(line);e=json.loads(line);n+=1
+                if name=='WINDOW_TOKEN_DELTAS.jsonl':
+                    uid=e['request_uuid'];assert e['previous_tokens']==prefix_counts.get(uid,0)
+                    prefix_counts[uid]=e['output_tokens'];prefixes.setdefault(uid,[]).extend(e['new_token_ids'])
+                    if e['phase']=='main':assert origin<=e['monotonic']<end;raw_tokens+=len(e['new_token_ids'])
+                elif name=='EXECUTOR_EVENTS.jsonl':
+                    assert math.isfinite(e['start_monotonic'])
+                    late_model_calls+=e['start_monotonic']>=end
+                    assert e['error']is None or(e['error']=='CancelledError'and e['end_monotonic']>=end)
+                elif name=='SHARED_PREDICTION_EVENTS.jsonl':assert not(e['kind']=='prediction_fallback'and e['monotonic']<end)
         digests[name]=h.hexdigest();counts[name]=n
     assert late_model_calls==0,'Model execution started after fixed cutoff'
     server=json.loads((A/'WINDOW_SERVER_CUTOFF.json').read_text());progress={r['request_uuid']:r for r in server['requests']}
     for uid,ids in prefixes.items():assert progress[uid]['output_prefix_sha256']==hashlib.sha256(json.dumps([ids]).encode()).hexdigest()
-    cpu=[json.loads(l)for l in(A/'SCHEDULER_CPU_EVENTS.jsonl').open()];runtime=json.loads((A/'SCHEDULER_CPU_RUNTIME.json').read_text());assert len(cpu)==runtime['calls']and runtime['failed_calls']==0
+    with(A/'SCHEDULER_CPU_EVENTS.jsonl').open()as stream:cpu=[json.loads(l)for l in stream]
+    runtime=json.loads((A/'SCHEDULER_CPU_RUNTIME.json').read_text());assert len(cpu)==runtime['calls']and runtime['failed_calls']==0
     cpu_main=sorted(e['thread_cpu_ns']/1e6 for e in cpu if origin<=e['start_monotonic']<end);assert cpu_main
     def percentile(v,q):
         x=(len(v)-1)*q;i=int(x);return v[i]+(v[min(i+1,len(v)-1)]-v[i])*(x-i)

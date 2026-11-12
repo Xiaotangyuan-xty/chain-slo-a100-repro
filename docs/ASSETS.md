@@ -27,3 +27,5 @@ python tools/fetch_assets.py model --model llama8 --revision YOUR_40_HEX_COMMIT 
 ```
 
 下载器不读取/输出 token 值；HF 登录和 gated 访问按官方工具在服务器自行配置。资产 receipt 只证明下载和内容哈希，不证明模型成功加载，也不自动授权 GPU 实验。
+
+同一个输出目录只能复用同一模型、同一 immutable revision；已有收据的绑定不同会直接拒绝。工具按该 revision 的官方文件列表校验完整 payload 集合，排除其自身 `ASSET_RECEIPT.json` 和 HF 的 `.cache/huggingface/` 元数据；多余旧文件不会被自动删除，而是报错。再次下载不会把旧收据的哈希写入新收据。30B/70B 若无历史逐文件 SHA，`historical_snapshot_matches` 为 `null`，不能解释成与历史 snapshot 相同。

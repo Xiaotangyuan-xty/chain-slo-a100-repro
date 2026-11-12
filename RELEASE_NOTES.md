@@ -1,3 +1,12 @@
+# Unreleased — deployment and audit corrections
+
+- Explicitly install vLLM build requirements before `--no-build-isolation`, and install the constrained QRF runtime requirements separately.
+- Reset the tokenizer and text-count cache per case in both batch auditors; reject executor starts at or after H without a 10ms tolerance, including in the primary gates.
+- Exclude receipt self-hashes, bind reused model directories to one revision, and reject missing/extra payload files against the pinned official repository listing.
+- Preserve the original auxiliary provenance record and reconcile current hashes to the authoritative 28-file suite.
+- Extend integrity coverage to the complete published checkout, including tools/configs/tests; detect changed, missing and unlisted files. The SHA manifest excludes itself and is bound by Git; it is not a signature.
+- Add CPU regression fixtures; no live runner, historical PASS receipt, frozen algorithm file or GPU experiment changed.
+
 # v0.1.0 — frozen sources and CPU reproduction plans
 
 Initial public release for 8×A100 80GB SXM/NVLink migration preparation.

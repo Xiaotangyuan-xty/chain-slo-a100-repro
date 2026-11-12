@@ -59,8 +59,8 @@ chainbench doctor
 - `data/`：两个模型的冻结 DR200 压缩 JSON，以及 Azure 映射数组。
 - `chainbench/`：相对路径配置、134 组矩阵、固定输入生成、KV 规则、资格缺项检查。
 - `configs/`、`profiles/`：官方资产清单和无机器绑定的部署档案模板。
-- `provenance/`：候选校验与源码 SHA 清单；`tests/`：CPU 合同和真实截断 wrapper 测试。
+- `provenance/`：候选校验与完整发布内容 SHA 清单（含新工具、配置、测试和文档）；`tests/`：CPU 合同和真实截断 wrapper 测试。
 
-公开前仅有两项兼容/脱敏修改，详见 `provenance/PUBLICATION_ADJUSTMENTS.json`：上游示例的硬编码 HF 凭据改为本地环境变量、历史日志字符串的 Python 引号兼容修正。冻结候选算法保持原字节。
+首次公开前的两项兼容/脱敏修改见 `provenance/PUBLICATION_ADJUSTMENTS.json`：上游示例的硬编码 HF 凭据改为本地环境变量、历史日志字符串的 Python 引号兼容修正。后续部署/审计修复见 [REVIEW_FIXES_2026-11-12.md](docs/REVIEW_FIXES_2026-11-12.md)。冻结候选算法保持原字节。
 
 完整上传清单见 [UPLOAD_INVENTORY.md](docs/UPLOAD_INVENTORY.md)。代码许可与数据来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

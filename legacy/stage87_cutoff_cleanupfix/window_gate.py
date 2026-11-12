@@ -4,6 +4,21 @@ from collections import Counter
 import hashlib,json,math,sys
 def read(p):return json.loads(p.read_text())
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def executor_trace_checks(attempt,end):
+    # Warmup may precede the main window; no executor may start at/after H.
+    execution=failed_before=unexpected_errors=late_starts=0
+    with(attempt/'EXECUTOR_EVENTS.jsonl').open()as stream:
+        for line in stream:
+            e=json.loads(line);execution+=1
+            late_starts+=not(math.isfinite(e['start_monotonic'])and e['start_monotonic']<end)
+            if e['error']:
+                failed_before+=e['end_monotonic']<end
+                unexpected_errors+=e['error']!='CancelledError'
+    return {
+        'executor_trace_complete_and_no_pre_cutoff_failure':execution==read(attempt/'EXECUTOR_OBSERVATION.json')['events']and failed_before==unexpected_errors==0,
+        'executor_starts_strictly_before_cutoff':late_starts==0,
+    }
+
 def analyze(root,C,attempt_name):
     A=C/'attempts'/attempt_name;p=read(C/'PROTOCOL.json');work=read(C/'WORKLOAD.json');snapshot=read(A/'CLIENT_CUTOFF_SNAPSHOT.json')
     common=read(A/'common_audit_summary.json');control=read(A/'controller_receipt.json');server=read(A/'WINDOW_SERVER_CUTOFF.json')
@@ -98,13 +113,7 @@ def analyze(root,C,attempt_name):
     checks['native_backend_unchanged']=all(sha(Path(n))==v for n,v in p['native_backend_sha256'].items())
     from resource_contract_validation import verify
     checks.update(verify(p,common,read(A/'processes.json'))['checks'])
-    execution=0;failed_before=0;unexpected_errors=0
-    for line in(A/'EXECUTOR_EVENTS.jsonl').open():
-        e=json.loads(line);execution+=1
-        if e['error']:
-            failed_before+=e['end_monotonic']<end
-            unexpected_errors+=e['error']!='CancelledError'
-    checks['executor_trace_complete_and_no_pre_cutoff_failure']=execution==read(A/'EXECUTOR_OBSERVATION.json')['events']and failed_before==unexpected_errors==0
+    checks.update(executor_trace_checks(A,end))
     gpu=[json.loads(l)for l in(A/'WINDOW_GPU_CPU_SAMPLES.jsonl').open()];kv=[json.loads(l)for l in(A/'WINDOW_KV_SAMPLES.jsonl').open()]
     checks['GPU_and_KV_time_series_present']=any(start<=r['monotonic']<end and r['query_returncode']==0 and r['gpu'].startswith('0, '+p['resources']['gpu_uuid'])for r in gpu)and any(start<=r['monotonic']<end and'gpu_blocks_free'in r for r in kv)
     signatures={str(k):{n:e[n]for n in ['prompt_sha256','generation','received_slo']}for k,e in observed.items()}

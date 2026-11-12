@@ -7,7 +7,8 @@ from pathlib import Path
 import re
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from chainbench.core import ROOT, source_check, dump
+from chainbench.core import ROOT, source_check
+from chainbench.integrity import published_files
 
 def main():
     bad=[];syntax=[];total=0;files=[]
@@ -15,11 +16,7 @@ def main():
               re.compile(rb'gh[pousr]_[A-Za-z0-9]{30,}'),
               re.compile(rb'github_pat_[A-Za-z0-9_]{30,}'),
               re.compile(rb'hf_[A-Za-z0-9]{30,}')]
-    for f in sorted(ROOT.rglob('*')):
-        parts=f.relative_to(ROOT).parts
-        if not f.is_file() or any(s in parts for s in ['.git','.venv','__pycache__']):continue
-        if parts[0]in ['build','dist','runs','downloads','models']:continue
-        if f.name.endswith('.egg-info') or any(x.endswith('.egg-info')for x in f.parts):continue
+    for f in [*published_files(ROOT),ROOT/'provenance/SOURCE_SHA256.json']:
         data=f.read_bytes();name=str(f.relative_to(ROOT));total+=len(data);files.append(name)
         if len(data)>20_000_000:bad.append((name,'file >20MB'))
         scan_data=gzip.decompress(data)if f.suffix=='.gz'else data
